@@ -45,7 +45,8 @@ public:
 				throw NotInt(message.c_str());
 			}
 		}
-		_number = number.substr(i_start, number.length() - i_start);//запись числа в поле _number без знака			
+		_number = number.substr(i_start, number.length() - i_start);//запись числа в поле _number без знака
+		this->cut_zero();//удаление незначащих нулей
 	};
 
 	big_integer(const big_integer &other)//конструктор копирования
@@ -84,11 +85,15 @@ public:
 
 	friend big_integer operator+(const big_integer &left, const big_integer &right);
 	friend big_integer operator+(const big_integer &left, const int right);
-	friend big_integer operator+(const int right, const big_integer &left);
+	friend big_integer operator+(const int left, const big_integer &right);
 
 	friend big_integer operator-(const big_integer &left, const big_integer &right);
 	friend big_integer operator-(const big_integer &left, const int right);
-	friend big_integer operator-(const int right, const big_integer &left);
+	friend big_integer operator-(const int left, const big_integer &right);
+
+	friend big_integer operator*(const big_integer &left, const big_integer &right);
+	friend big_integer operator*(const big_integer &left, const int right);
+	friend big_integer operator*(const int left, const big_integer &right);
 
 	friend bool operator>(const big_integer &left, const big_integer &right);
 	friend bool operator<(const big_integer &left, const big_integer &right);
@@ -114,6 +119,22 @@ public:
 private:
 	std::string _number;
 	bool negativ;
+	
+	void cut_zero()//удаление незначащих нулей
+	{
+		for (int i = 0; i < _number.length(); ++i)
+		{
+			if (_number[i] == '0' && _number.length() != 1)
+			{
+				_number.erase(0, 1);
+				--i;
+			}
+			else
+			{
+				break;
+			}
+		}
+	}	
 };
 
 std::ostream &operator<<(std::ostream &stream, const big_integer &other)
@@ -250,18 +271,8 @@ big_integer operator-(const big_integer &left, const big_integer &right)
 			result.negativ = true;
 		}
 		
-		for (int i = 0; i < result._number.length(); ++i)//удаление незначащих нулей
-		{
-			if (result._number[i] == '0' && result._number.length() != 1)
-			{
-				result._number.erase(0, 1);
-				--i;
-			}
-			else
-			{
-				break;
-			}
-		}
+		result.cut_zero();//удаление незначащих нулей
+
 	}
 	return result;
 };
@@ -369,6 +380,55 @@ bool operator!=(const big_integer &left, const big_integer &right)
 	return !(left == right);
 };
 
+big_integer operator*(const big_integer &left, const big_integer &right)
+{
+	big_integer result;
+	std::string tmp_mul = "";
+	int shift = 0;
+	int mul = 0;
+
+	if ((left.negativ && !right.negativ) || (!left.negativ && right.negativ))
+	{
+		result = right.abs() * left.abs();
+		result.negativ = true;
+	}
+	else
+	{
+		result.negativ = false;
+		for (int i_right = right._number.length() - 1; i_right >= 0; --i_right)
+		{
+			char a = right._number[i_right];			
+			for (int i_left = left._number.length() - 1; i_left >= 0; --i_left)
+			{
+				char b = left._number[i_left];
+				mul = atoi(&a) * atoi(&b) + shift;
+				tmp_mul = std::to_string(mul % 10) + tmp_mul;
+				shift = mul / 10;
+			}
+			if (shift > 0)
+			{
+				tmp_mul = std::to_string(shift) + tmp_mul;
+				shift = 0;
+			}
+			tmp_mul.append(right._number.length() - i_right - 1, '0');
+			result = result + big_integer(tmp_mul);
+			tmp_mul.clear();
+		}
+		result.cut_zero();//удаление незначащих нулей
+	}
+	return result;
+};
+big_integer operator*(const big_integer &left, const int right)
+{
+	big_integer tmp_int(std::to_string(right));
+
+	return left * tmp_int;
+};
+big_integer operator*(const int left, const big_integer &right)
+{
+	return right * left;
+};
+
 int main()
 {
 	setlocale(LC_ALL, "RU");
@@ -410,4 +470,13 @@ int main()
 	std::cout << "\n";
 	std::cout << "number2 + number3 = " << number2 + number3 << std::endl; // 0
 	std::cout << "number2 - number2 = " << number2 - number2 << std::endl; // 0
+
+	std::cout << "\n";
+	std::cout << "number1 * number2 = " << number1 * number2 << std::endl; // (+)*(+) 8996887300
+	std::cout << "number1 * number3 = " << number1 * number3 << std::endl; // (+)*(-) -8996887300
+	std::cout << "number3 * number1 = " << number3 * number1 << std::endl; // (-)*(+) -8996887300
+	std::cout << "number3 * number4 = " << number3 * number4 << std::endl; // (-)*(-) 1570480
+	std::cout << "4 * number2 = " << 4 * number2 << std::endl;			   // (int)*(-) 314096
+	std::cout << "number2 * 4 = " << number2 * 4 << std::endl;			   // (-)*(int) 314096
+	std::cout << "number1 * 0 = " << number1 * 0 << std::endl;			   // 0
 }
