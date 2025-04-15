@@ -20,11 +20,11 @@
 
 ### Задание 1
 
-[Перемещение объектов](https://github.com/netology-code/cppl-homeworks/tree/main/11/01).
+[Перемещение объектов](01).
 
 ### Задание 2
 
-[Большие числа](https://github.com/netology-code/cppl-homeworks/tree/main/11/02).
+[Большие числа](02).
 
 ------
 
