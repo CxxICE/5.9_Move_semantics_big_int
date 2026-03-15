@@ -23,7 +23,7 @@ public:
 		_number = "";
 	}
 
-	big_integer(const std::string &number)//конструктор на основе string, первый знак "+" или "-" отбрасывается, 
+	big_integer(const std::string& number)//конструктор на основе string, первый знак "+" или "-" отбрасывается, 
 		//хранится положительное число с признаком negativ = true для отрицательных чисел
 	{
 		int i_start = 0;
@@ -32,14 +32,14 @@ public:
 		{
 			i_start = 1;
 		}
-		else if(static_cast<int>(number[0]) == MINUS)
+		else if (static_cast<int>(number[0]) == MINUS)
 		{
 			i_start = 1;
 			negativ = true;
 		}
 		for (int i = i_start; i < number.length(); ++i)//проверка на число введенного в конструктор значения
-		{			
-			if(!(static_cast<int>(number[i]) >= ZERO && static_cast<int>(number[i]) <= NINE))
+		{
+			if (!(static_cast<int>(number[i]) >= ZERO && static_cast<int>(number[i]) <= NINE))
 			{
 				std::string message = "Введенное значение \"" + number + "\" не является целым числом!";
 				throw NotInt(message.c_str());
@@ -49,20 +49,20 @@ public:
 		this->cut_zero();//удаление незначащих нулей
 	};
 
-	big_integer(const big_integer &other)//конструктор копирования
+	big_integer(const big_integer& other)//конструктор копирования
 	{
 		_number = other._number;
 		negativ = other.negativ;
 	};
 
-	big_integer(big_integer &&other) noexcept//конструктор перемещения
+	big_integer(big_integer&& other) noexcept//конструктор перемещения
 	{
 		_number = std::move(other._number);
 		negativ = other.negativ;
 		other.negativ = false;
 	};
 
-	big_integer &operator=(const big_integer &other)//оператор присваивания копированием
+	big_integer& operator=(const big_integer& other)//оператор присваивания копированием
 	{
 		if (&other != this)
 		{
@@ -70,9 +70,9 @@ public:
 			negativ = other.negativ;
 		}
 		return *this;
-	};	
+	};
 
-	big_integer &operator=(big_integer &&other) noexcept//оператор присваивания перемещением
+	big_integer& operator=(big_integer&& other) noexcept//оператор присваивания перемещением
 	{
 		if (&other != this)
 		{
@@ -83,26 +83,26 @@ public:
 		return *this;
 	};
 
-	friend big_integer operator+(const big_integer &left, const big_integer &right);
-	friend big_integer operator+(const big_integer &left, const int right);
-	friend big_integer operator+(const int left, const big_integer &right);
+	friend big_integer operator+(const big_integer& left, const big_integer& right);
+	friend big_integer operator+(const big_integer& left, const int right);
+	friend big_integer operator+(const int left, const big_integer& right);
 
-	friend big_integer operator-(const big_integer &left, const big_integer &right);
-	friend big_integer operator-(const big_integer &left, const int right);
-	friend big_integer operator-(const int left, const big_integer &right);
+	friend big_integer operator-(const big_integer& left, const big_integer& right);
+	friend big_integer operator-(const big_integer& left, const int right);
+	friend big_integer operator-(const int left, const big_integer& right);
 
-	friend big_integer operator*(const big_integer &left, const big_integer &right);
-	friend big_integer operator*(const big_integer &left, const int right);
-	friend big_integer operator*(const int left, const big_integer &right);
+	friend big_integer operator*(const big_integer& left, const big_integer& right);
+	friend big_integer operator*(const big_integer& left, const int right);
+	friend big_integer operator*(const int left, const big_integer& right);
 
-	friend bool operator>(const big_integer &left, const big_integer &right);
-	friend bool operator<(const big_integer &left, const big_integer &right);
-	friend bool operator>=(const big_integer &left, const big_integer &right);
-	friend bool operator<=(const big_integer &left, const big_integer &right);
-	friend bool operator==(const big_integer &left, const big_integer &right);
-	friend bool operator!=(const big_integer &left, const big_integer &right);
+	friend bool operator>(const big_integer& left, const big_integer& right);
+	friend bool operator<(const big_integer& left, const big_integer& right);
+	friend bool operator>=(const big_integer& left, const big_integer& right);
+	friend bool operator<=(const big_integer& left, const big_integer& right);
+	friend bool operator==(const big_integer& left, const big_integer& right);
+	friend bool operator!=(const big_integer& left, const big_integer& right);
 
-	friend std::ostream &operator<<(std::ostream &stream, const big_integer &other);	
+	friend std::ostream& operator<<(std::ostream& stream, const big_integer& other);
 
 	big_integer abs() const//модуль числа
 	{
@@ -119,7 +119,7 @@ public:
 private:
 	std::string _number;
 	bool negativ;
-	
+
 	void cut_zero()//удаление незначащих нулей
 	{
 		for (int i = 0; i < _number.length(); ++i)
@@ -134,10 +134,10 @@ private:
 				break;
 			}
 		}
-	}	
+	}
 };
 
-std::ostream &operator<<(std::ostream &stream, const big_integer &other)
+std::ostream& operator<<(std::ostream& stream, const big_integer& other)
 {
 	if (other.negativ)
 	{
@@ -146,16 +146,16 @@ std::ostream &operator<<(std::ostream &stream, const big_integer &other)
 	else
 	{
 		stream << other._number;
-	}	
+	}
 	return stream;
 };
 
-big_integer operator+(const big_integer &left, const big_integer &right)
+big_integer operator+(const big_integer& left, const big_integer& right)
 {
 	big_integer result;
 	int shift = 0;
 	int sum = 0;
-	
+
 	if (left.negativ && !right.negativ)
 	{
 		result = right - left.abs();
@@ -174,24 +174,24 @@ big_integer operator+(const big_integer &left, const big_integer &right)
 		{
 			result.negativ = false;
 		}
-				
+
 		for (int i_left = left._number.length() - 1, i_right = right._number.length() - 1; i_left >= 0 || i_right >= 0; --i_left, --i_right)
 		{
 			if (i_left < 0)
 			{
-				char a = right._number[i_right];
-				sum = atoi(&a) + shift;
+				std::string a = std::string(1,right._number[i_right]);
+				sum = std::stoi(a) + shift;
 			}
 			else if (i_right < 0)
 			{
-				char a = left._number[i_left];
-				sum = atoi(&a) + shift;
+				std::string a = std::string(1,left._number[i_left]);
+				sum = std::stoi(a) + shift;
 			}
 			else
 			{
-				char a = left._number[i_left];
-				char b = right._number[i_right];
-				sum = atoi(&a) + atoi(&b) + shift;				
+				std::string a = std::string(1,left._number[i_left]);
+				std::string b = std::string(1,right._number[i_right]);
+				sum = std::stoi(a) + std::stoi(b) + shift;
 			}
 			shift = sum / 10;
 			result._number = std::to_string(sum % 10) + result._number;
@@ -204,19 +204,19 @@ big_integer operator+(const big_integer &left, const big_integer &right)
 	return result;
 };
 
-big_integer operator+(const big_integer &left, const int right)
+big_integer operator+(const big_integer& left, const int right)
 {
 	big_integer tmp_int(std::to_string(right));
 
 	return left + tmp_int;
 };
 
-big_integer operator+(const int left, const big_integer &right)
+big_integer operator+(const int left, const big_integer& right)
 {
 	return right + left;
 };
 
-big_integer operator-(const big_integer &left, const big_integer &right)
+big_integer operator-(const big_integer& left, const big_integer& right)
 {
 	big_integer result;
 	int shift = 0;
@@ -243,22 +243,22 @@ big_integer operator-(const big_integer &left, const big_integer &right)
 			{
 				if (i_right < 0)
 				{
-					char a = left._number[i_left];
-					dif = atoi(&a) - shift;
+					std::string a = std::string(1,left._number[i_left]);
+					dif = std::stoi(a) - shift;
 					shift = 0;
 				}
 				else
 				{
-					char a = left._number[i_left];
-					char b = right._number[i_right];
-					if ((atoi(&a) - shift) >= atoi(&b))
+					std::string a = std::string(1,left._number[i_left]);
+					std::string b = std::string(1,right._number[i_right]);
+					if ((std::stoi(a) - shift) >= std::stoi(b))
 					{
-						dif = atoi(&a) - shift - atoi(&b);
+						dif = std::stoi(a) - shift - std::stoi(b);
 						shift = 0;
 					}
 					else
 					{
-						dif = atoi(&a) + 10 - shift - atoi(&b);
+						dif = std::stoi(a) + 10 - shift - std::stoi(b);
 						shift = 1;
 					}
 				}
@@ -270,28 +270,28 @@ big_integer operator-(const big_integer &left, const big_integer &right)
 			result = right - left;
 			result.negativ = true;
 		}
-		
+
 		result.cut_zero();//удаление незначащих нулей
 
 	}
 	return result;
 };
 
-big_integer operator-(const big_integer &left, const int right)
+big_integer operator-(const big_integer& left, const int right)
 {
 	big_integer tmp_int(std::to_string(right));
 
 	return left - tmp_int;
 };
 
-big_integer operator-(const int left, const big_integer &right)
+big_integer operator-(const int left, const big_integer& right)
 {
 	big_integer tmp_int(std::to_string(left));
 
 	return tmp_int - right;
 };
 
-bool operator>(const big_integer &left, const big_integer &right)
+bool operator>(const big_integer& left, const big_integer& right)
 {
 	std::string s_left = left._number;
 	std::string s_right = right._number;
@@ -303,7 +303,7 @@ bool operator>(const big_integer &left, const big_integer &right)
 	{
 		s_left.insert(0, s_right.length() - s_left.length(), '0');
 	}
-	
+
 	if (!left.negativ && !right.negativ)
 	{
 		return s_left > s_right;
@@ -322,12 +322,12 @@ bool operator>(const big_integer &left, const big_integer &right)
 	}
 };
 
-bool operator<=(const big_integer &left, const big_integer &right)
+bool operator<=(const big_integer& left, const big_integer& right)
 {
 	return !(left > right);
 };
 
-bool operator<(const big_integer &left, const big_integer &right)
+bool operator<(const big_integer& left, const big_integer& right)
 {
 	std::string s_left = left._number;
 	std::string s_right = right._number;
@@ -358,12 +358,12 @@ bool operator<(const big_integer &left, const big_integer &right)
 	}
 };
 
-bool operator>=(const big_integer &left, const big_integer &right)
+bool operator>=(const big_integer& left, const big_integer& right)
 {
 	return !(left < right);
 };
 
-bool operator==(const big_integer &left, const big_integer &right)
+bool operator==(const big_integer& left, const big_integer& right)
 {
 	if ((!left.negativ && !right.negativ) || (left.negativ && right.negativ))
 	{
@@ -375,12 +375,12 @@ bool operator==(const big_integer &left, const big_integer &right)
 	}
 };
 
-bool operator!=(const big_integer &left, const big_integer &right)
+bool operator!=(const big_integer& left, const big_integer& right)
 {
 	return !(left == right);
 };
 
-big_integer operator*(const big_integer &left, const big_integer &right)
+big_integer operator*(const big_integer& left, const big_integer& right)
 {
 	big_integer result;
 	std::string tmp_mul = "";
@@ -397,11 +397,11 @@ big_integer operator*(const big_integer &left, const big_integer &right)
 		result.negativ = false;
 		for (int i_right = right._number.length() - 1; i_right >= 0; --i_right)
 		{
-			char a = right._number[i_right];			
+			std::string a = std::string(1,right._number[i_right]);
 			for (int i_left = left._number.length() - 1; i_left >= 0; --i_left)
 			{
-				char b = left._number[i_left];
-				mul = atoi(&a) * atoi(&b) + shift;
+				std::string b = std::string(1,left._number[i_left]);
+				mul = std::stoi(a) * std::stoi(b) + shift;
 				tmp_mul = std::to_string(mul % 10) + tmp_mul;
 				shift = mul / 10;
 			}
@@ -418,13 +418,13 @@ big_integer operator*(const big_integer &left, const big_integer &right)
 	}
 	return result;
 };
-big_integer operator*(const big_integer &left, const int right)
+big_integer operator*(const big_integer& left, const int right)
 {
 	big_integer tmp_int(std::to_string(right));
 
 	return left * tmp_int;
 };
-big_integer operator*(const int left, const big_integer &right)
+big_integer operator*(const int left, const big_integer& right)
 {
 	return right * left;
 };
